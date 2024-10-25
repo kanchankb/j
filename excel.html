@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Modern Login Page</title>
+</head>
+<style>
+
+
+header {
+    background-color: #512da8;
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 1.5em;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 0 4px 2px -2px gray;
+}
+
+.navbar {
+    /* position: fixed; */
+    top: 0;
+    width: 100%;
+    background-color: #512da8;
+    color: white;
+    padding: 15px 0;
+    z-index: 1000;
+    box-shadow: 0 4px 2px -2px gray;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.navbar-title {
+    font-size: 1.5em;
+    font-family: 'Arial', sans-serif;
+}
+
+.navbar-links a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 1em;
+    transition: color 0.3s ease;
+}
+
+.navbar-links a:hover {
+    color: #00ccff;
+}
+.login-container {
+    width: 90%;
+    max-width: 1000px;
+    padding: 40px; /* Adjusted padding */
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin: 120px auto; /* Centering with auto margins */
+}
+
+
+        .login-box {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .button-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .centered-button {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        button {
+            background-color: #512da8;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        input[type="file"] {
+            background-color: white;
+            color: black;
+            padding: 10px;
+            border: 1px solid  #512da8;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        #submitBtn {
+            background-color:  #512da8;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        #submitBtn:hover {
+            background-color: darkblue;
+        }
+
+        /* Responsive design */
+        @media (min-width: 600px) {
+            .button-row {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 20px;
+            }
+
+            .centered-button {
+                justify-content: center;
+            }
+
+            button, #submitBtn {
+                min-width: 200px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .login-container {
+                padding: 40px;
+            }
+        }
+
+</style>
+
+<body>
+
+    <header class="navbar">
+        <div class="navbar-container">
+            <h1 class="navbar-title">बुलढाणा पोलीस</h1>
+            <nav class="navbar-links">
+                <a href="">Home</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </nav>
+        </div>
+    </header>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="button-row">
+                <button type="button">मतदान केंद्र नाव</button>
+                <input type="file" id="uploadFirst" accept=".xlsx, .xls">
+            </div>
+
+            <div class="button-row">
+                <button type="button">स्टाफ</button>
+                <input type="file" id="uploadSecond" accept=".xlsx, .xls">
+            </div>
+
+            <div class="button-row">
+                <div class="centered-button">
+                    <button type="button" id="submitBtn">मतदान केंद्र बंदोबस्त</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let firstExcelData, secondExcelData;
+
+        document.getElementById('uploadFirst').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                firstExcelData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                localStorage.setItem('firstExcelData', JSON.stringify(firstExcelData));
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        document.getElementById('uploadSecond').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                secondExcelData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                localStorage.setItem('secondExcelData', JSON.stringify(secondExcelData));
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            window.location.href = 'display2.html';
+        });
+    </script>
+</body>
+</html>
+
+    
+</body>
+
+</html>
